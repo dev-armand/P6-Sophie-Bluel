@@ -1,16 +1,12 @@
 const modal = document.querySelector("#modal");
-const openModal = document.querySelector(".modifier-btn2");
 const closeModal = document.querySelector(".vectorx");
 
-openModal.addEventListener('click', () => {
-  modal.showModal();
-  openModal.classList.add('galerie-photo');
+
+function openModal() {
+  modal.classList.add("visible");
+}
+
+closeModal.addEventListener('click',() => {
+  modal.classList.remove("visible");
 });
-
-closeModal.addEventListener('click', () => {
-  modal.close();
-  openModal.classList.remove('galerie-photo');
-});
-
-
 

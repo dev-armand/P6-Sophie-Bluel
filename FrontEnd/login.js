@@ -1,3 +1,11 @@
+async function loginForm() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const user = {
+    email: email,
+    password: password
+  };
 
   try {
     const response = await fetch("http://localhost:5678/api/users/login", {
@@ -14,26 +22,18 @@
 
     const data = await response.json();
     console.log(data);
-    // Handle the successful login response here
+    // Call the handleSuccessfulLogin function and pass the token received from the server
+    handleSuccessfulLogin(data.token);
+    
   } catch (err) {
     console.log(err);
     // Handle errors during login here
+    
   }
 };
 
-// fonction de gestion du formulaire de connexion
-function handleLogin(event){
-  event.preventDefault();
-  const email = document.querySelector("#email").value;
-  const password = document.querySelector("#password").value;
-  const result = login(email, password);
-  result.then(message => {
-    alert(message);
-  });
-};
+const loginButton = document.getElementById('loginButton');
+loginButton.addEventListener('click', loginForm);
 
-// event listener 
-addEventListener("DOMContentLoaded", () => {
-  const loginForm = document.querySelector(".loginForm");
-  loginForm.addEventListener("submit", handleLogin);
-});
+sessionStorage.setItem("userId", "token");
+console.log(sessionStorage.getItem("userId"));

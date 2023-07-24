@@ -47,7 +47,9 @@
 	</div>
 	
 	<!-- Modal -->
-	<dialog id="modal" >
+	<div id="modal" class="modal" >
+		<div class="galerie-photo-box">
+			
 		<div class="galerie-photo">
 			<img class="galerie-photo-vector vectorx" src="./assets/icons/xmark.png" alt="X">
 			<h2>Galerie photo</h2>
@@ -115,14 +117,16 @@
 				<input class="delete" type="text" value="Supprimer la galerie">
 			</form>
 		</div>
+		</div>
 
-	</dialog>
+	</div>
+
 	<section id="portfolio">
 		<div class="projects-modifier">
 			<h2>Mes Projets</h2>
 		<div class="modifier modifier2">
 		<img src="./assets/icons/Vector.png" alt="vector modification">
-		<button class="modifier-btn modifier-btn2">modifier</button>
+		<button class="modifier-btn modifier-btn2" onclick="openModal()">modifier</button>
 		</div>
 		</div>
 
