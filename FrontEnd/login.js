@@ -11,15 +11,13 @@
     if (!response.ok) {
       throw new Error("Login failed!");
     }
-    // condition si mot de passe correcte
-    if (user.password === password) {
-      return "Connexion réussie!";
-    } else {
-      return "Mot de passe incorrecte!"
-    }
-  } catch (error) {
-    console.error("Erreur lors de la récupération des utilisateurs :", error);
-    return "Une erreur s'est produite lors de la connexion. ";
+
+    const data = await response.json();
+    console.log(data);
+    // Handle the successful login response here
+  } catch (err) {
+    console.log(err);
+    // Handle errors during login here
   }
 };
 
