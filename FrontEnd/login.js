@@ -1,6 +1,18 @@
+const loginButton = document.querySelector('#loginButton');
+loginButton.addEventListener('click', loginForm);
+
+async function handleSuccessfulLogin(token) {
+  // Save the token to sessionStorage
+  sessionStorage.setItem("userId", token);
+
+  // Redirect the user to index.html
+  window.location.href = "index.html";
+}
+
+// Login function
 async function loginForm() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.querySelector('#email').value;
+  const password = document.querySelector('#password').value;
 
   const user = {
     email: email,
@@ -27,13 +39,6 @@ async function loginForm() {
     
   } catch (err) {
     console.log(err);
-    // Handle errors during login here
-    
+    alert("Email ou mot de passe incorrecte !");
   }
-};
-
-const loginButton = document.getElementById('loginButton');
-loginButton.addEventListener('click', loginForm);
-
-sessionStorage.setItem("userId", "token");
-console.log(sessionStorage.getItem("userId"));
+}
