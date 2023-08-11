@@ -14,18 +14,13 @@
 </head>
 <body>
 <header>
-	<div id="edition" class="edition hidden">
-		<img src="./assets/icons/Vector.png" alt="vector modification">
-		<p>Mode édition</p>
-	<button class="edition-btn">publier les changements</button>
-	</div>
 	<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
 	<nav>
-		<ul>
+		<ul id="menu">
 			<li>projets</li>
 			<li>contact</li>
-			<a href="login.html"><li>login</li></a>
-			
+			<a id="loginLink" href="login.html"><li>login</li></a>
+			<a id="logoutLink" class="logout hidden" href="index.html"><li>logout</li></a>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -43,7 +38,7 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<h2 class="mes-projets-title">Mes Projets</h2>
 		<div class="projects-filtres">
 			<button data-filter="all" class="projects-btn">Tous</button>
 		<button data-filter="objets" id="showObjetsBtn" class="projects-btn">Objets</button>
@@ -51,47 +46,47 @@
 		<button data-filter="hotel-restaurant" id="showHotelRestaurantsBtn" class="projects-btn">Hôtels & Restaurants</button>
 		</div>
 		<div class="gallery">
-			<figure class="objets">
+			<figure data-img="1" class="objets">
 				<img  src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
 				<figcaption>Abajour Tahina</figcaption>
 			</figure>
-			<figure class="appartements" >
+			<figure data-img="2" class="appartements" >
 				<img src="assets/images/appartement-paris-v.png" alt="Appartement Paris V">
 				<figcaption>Appartement Paris V</figcaption>
 			</figure>
-			<figure class="hotel-restaurant">
+			<figure data-img="3" class="hotel-restaurant">
 				<img  src="assets/images/restaurant-sushisen-londres.png" alt="Restaurant Sushisen - Londres">
 				<figcaption>Restaurant Sushisen - Londres</figcaption>
 			</figure>
-			<figure class="appartements">
+			<figure data-img="4" class="appartements">
 				<img  src="assets/images/la-balisiere.png" alt="Villa “La Balisiere” - Port Louis">
 				<figcaption>Villa “La Balisiere” - Port Louis</figcaption>
 			</figure>
-			<figure class="objets">
+			<figure data-img="5" class="objets">
 				<img  src="assets/images/structures-thermopolis.png" alt="Structures Thermopolis">
 				<figcaption>Structures Thermopolis</figcaption>
 			</figure>
-			<figure class="appartements" >
+			<figure data-img="6" class="appartements" >
 				<img src="assets/images/appartement-paris-x.png" alt="Appartement Paris X">
 				<figcaption>Appartement Paris X</figcaption>
 			</figure>
-			<figure class="appartements">
+			<figure data-img="7" class="appartements">
 				<img  src="assets/images/le-coteau-cassis.png" alt="Pavillon “Le coteau” - Cassis">
 				<figcaption>Pavillon “Le coteau” - Cassis</figcaption>
 			</figure>
-			<figure class="appartements" >
+			<figure data-img="8" class="appartements" >
 				<img src="assets/images/villa-ferneze.png" alt="Villa Ferneze - Isola d’Elba">
 				<figcaption>Villa Ferneze - Isola d’Elba</figcaption>
 			</figure>
-			<figure class="appartements">
+			<figure data-img="9" class="appartements">
 				<img  src="assets/images/appartement-paris-xviii.png" alt="Appartement Paris XVIII">
 				<figcaption>Appartement Paris XVIII</figcaption>
 			</figure>
-			<figure class="hotel-restaurant" >
+			<figure data-img="10" class="hotel-restaurant" >
 				<img src="assets/images/bar-lullaby-paris.png" alt="Bar “Lullaby” - Paris">
 				<figcaption>Bar “Lullaby” - Paris</figcaption>
 			</figure>
-			<figure class="hotel-restaurant">
+			<figure data-img="11" class="hotel-restaurant">
 				<img  src="assets/images/hotel-first-arte-new-delhi.png" alt="Hotel First Arte - New Delhi">
 				<figcaption>Hotel First Arte - New Delhi</figcaption>
 			</figure>
@@ -111,7 +106,6 @@
 		</form>
 	</section>
 </main>
-
 <footer>
 	<nav>
 		<ul>
@@ -120,6 +114,7 @@
 	</nav>
 </footer>
 <script src="projets.js"></script>
-<script src="login.js"></script>
+<script src="logedIn.js"></script>
+<script src="modal.js"></script>
 </body>
 </html>

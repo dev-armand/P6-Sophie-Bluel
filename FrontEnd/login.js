@@ -3,7 +3,7 @@ loginButton.addEventListener('click', loginForm);
 
 async function handleSuccessfulLogin(token) {
   // Save the token to sessionStorage
-  sessionStorage.setItem("userId", token);
+  sessionStorage.setItem("token", token);
 
   // Redirect the user to index.html
   window.location.href = "index.html";
@@ -32,9 +32,9 @@ async function loginForm() {
       throw new Error("Login failed!");
     }
 
+    // Response from the server and extracts the JSON data
     const data = await response.json();
     console.log(data);
-    // Call the handleSuccessfulLogin function and pass the token received from the server
     handleSuccessfulLogin(data.token);
     
   } catch (err) {
@@ -42,3 +42,13 @@ async function loginForm() {
     alert("Email ou mot de passe incorrecte !");
   }
 }
+
+// Connection status
+function isConnected(){
+  if (sessionStorage.getItem('token')){
+    return true;
+  } 
+  return false;
+}
+
+

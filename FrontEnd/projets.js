@@ -2,7 +2,7 @@ const objets = document.querySelector(".objets");
 const appartements = document.querySelector(".appartements");
 const hotelRestaurant = document.querySelector(".hotel-restaurants");
 
-// Function to show images
+// Function to show images  based on their CSS class.
 function showFiguresByClass(className) {
   const figures = document.querySelectorAll(".gallery figure");
   figures.forEach(figure => {
@@ -14,7 +14,7 @@ function showFiguresByClass(className) {
   });
 }
 
-// Event listeners for the buttons
+// Event listeners for the buttons to filter images
 document.querySelector(".projects-filtres").addEventListener("click", event => {
   const target = event.target;
   if (target.classList.contains("projects-btn")) {

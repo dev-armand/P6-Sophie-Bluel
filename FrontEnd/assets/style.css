@@ -173,9 +173,9 @@ input[type="submit"]{
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
-	background-color: #1D6154;
 	margin : 2em auto ;
-	width: 180px;
+	width: 273px;
+	height: 36px;
 	text-align: center;
 	border-radius: 60px ;
 }
@@ -186,7 +186,7 @@ footer nav ul {
 	margin: 2em
 }
 
-/**************************************** LOGIN */
+/**************************************** LOGIN page */
 
 .loginForm {
 	display: flex;
@@ -206,6 +206,7 @@ footer nav ul {
 	width: 179px;
 	height: 36px;
 	border-radius: 60px;
+	background-color: #1D6154;
 }
 
 .login p {
@@ -333,6 +334,7 @@ color: white;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	z-index: 2;
 }
 
 .galerie-photo-box {
@@ -355,15 +357,15 @@ color: white;
 	align-items: center;
 	justify-content: flex-start;
 	width: 630px;
-	height: 731px;
+	height: 561px;
 	border-radius: 20px;
 	background-color: white;
-	top: 0px;
+	top: 70px;
 }
 
 .galerie-photo h2 {
-	margin-top: 50px;
-	margin-bottom: 50px;
+	margin-top: 30px;
+	margin-bottom: 20px;
 	font-family: Work Sans;
 	color: black;
 	font-weight: 300;
@@ -376,15 +378,15 @@ color: white;
 	align-items: center;
 	justify-content: flex-start;
 	width: 425px;
-	height: 400px;
+	height: 300px;
 	flex-wrap: wrap;
 	gap: 10px;
 }
 
 .galerie-photo-fig {
 	position: relative;
-	width: 77px;
-  height: 115px;
+	width: 70px;
+  height: 85px;
 }
 
 .galerie-photo-img {
@@ -408,14 +410,20 @@ color: white;
 	right: 20px;
 }
 
+.vector-left-arrow {
+	top:20px;
+	left:20px;
+}
+
 .line-img {
-	margin-top: 50px;
+	margin-top: 45px;
 }
 
 .delete {
 	border: none;
 	color: red;
 	font-family: Work Sans;
+	background-color: white;
 }
 
 .add-picture {
@@ -428,10 +436,98 @@ color: white;
 .modal {
 	visibility: hidden;
 }
+
 .visible {
 	visibility: visible;
+	z-index: 3;
 }
 
-.hidden {
+.overflow-hidden {
+	overflow: hidden;
+}
+
+.non-visible {
 	display: none;
+}
+
+.display-none {
+	display: none;
+}
+
+/* modal second page */
+
+.ajouter-photos {
+	height: 430px;
+	width: 420px;
+	background: #E8F1F6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.titre, .categorie {
+	height: 250px;
+	width: 420px;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.galerie-photo2 {
+	gap: 10px;
+}
+
+.titre-placeholder, .categorie-placeholder {
+	width: 415px;
+	height: 50px;
+	border: none;
+	box-shadow: 0px 4px 14px 0px #00000017;
+}
+
+.ajouter-photo-btn {
+	display: block;
+	height: 36px;
+	width: 173px;
+	border-radius: 50px;
+	border: none;
+	background: #E8F1F6;
+	filter: brightness(95%);
+	color: rgb(40, 81, 152);
+}
+
+.ajouter-photo-btn:hover {
+	filter: brightness(90%);
+}
+
+.validate-picture {
+	width: 420px;
+	display: flex;
+}
+.valider-picture-btn {
+	background: rgb(166, 166, 166);
+	border: none;
+	height: 36px;
+	width: 536px;
+}
+
+.ajouter-photos {
+	overflow: hidden;
+}
+
+.image-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.selected-img2 {
+	width: 58%;
+  height: 100%;
+}
+
+.green-color {
+	background-color: #1D6154;
 }

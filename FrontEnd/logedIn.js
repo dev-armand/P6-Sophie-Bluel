@@ -2,7 +2,7 @@
 
 // Function to check if the user is logged in
 function isConnected() {
-  return sessionStorage.getItem('userId') !== null;
+  return sessionStorage.getItem('token') !== null;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -64,85 +64,58 @@ document.addEventListener('DOMContentLoaded', () => {
     if (portfolio) {
       const modalContent = `<div id="modal" class="modal" >
       <div class="galerie-photo-box">
-        
-      <div class="galerie-photo">
+      <div class="galerie-photo galerie-photo1">
         <img class="galerie-photo-vector vectorx" src="./assets/icons/xmark.png" alt="X">
         <h2>Galerie photo</h2>
         <div class="galerie-photo-container">
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-            <img class="galerie-photo-vector vector2" src="./assets/icons/Move.png" alt="icone mouvement">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/appartement-paris-v.png" alt="Appartement Paris V">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/restaurant-sushisen-londres.png" alt="Restaurant Sushisen - Londres">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/la-balisiere.png" alt="Villa “La Balisiere” - Port Louis">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/structures-thermopolis.png" alt="Structures Thermopolis">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/appartement-paris-x.png" alt="Appartement Paris X">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/le-coteau-cassis.png" alt="Pavillon “Le coteau” - Cassis">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/villa-ferneze.png" alt="Villa Ferneze - Isola d’Elba">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/appartement-paris-xviii.png" alt="Appartement Paris XVIII">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/bar-lullaby-paris.png" alt="Bar “Lullaby” - Paris">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
-          <figure class="galerie-photo-fig">
-            <img class="galerie-photo-img" src="assets/images/hotel-first-arte-new-delhi.png" alt="Hotel First Arte - New Delhi">
-            <figcaption>éditer</figcaption>
-            <img class="galerie-photo-vector vector1" src="./assets/icons/Group 10.png" alt="icone poubelle">
-          </figure>
         </div>
         <img class="line-img" src="./assets/icons/Line 1.png" alt="image d'une ligne">
         <form class="add-picture" action="#">
           <input class="connecter add-picture-btn" type="submit" value="Ajouter une photo">
-          <input class="delete" type="text" value="Supprimer la galerie">
+          <input class="delete" type="button" value="Supprimer la galerie">
+        </form>
+      </div>
+      <div  class="galerie-photo galerie-photo2 display-none">
+        <img class="galerie-photo-vector vectorx" src="./assets/icons/xmark.png" alt="icone image">
+        <img class="galerie-photo-vector vector-left-arrow" src="./assets/icons/arrow-left.png" alt="arrow icon">
+        <h2>Ajout photo</h2>
+        
+        <div class="ajouter-photos">
+        <label for="getFile">
+          <div id="image-container" class="image-container">
+            <img class="selected-img" id="selectedImage" src="./assets/icons/picture-svgrepo-com1.png" alt="X">
+          </div>
+        </label>
+        <button class="ajouter-photo-btn remove" onclick="document.getElementById('getFile').click()">+Ajouter photo</button>
+        <input type="file" id="getFile" style="display:none;" accept="image/*" onchange="handleImageSelect(event)">
+        <p class="text">jpg.png: 4mo max </p>
+        </div>
+        <div class="titre">
+        <h3>Titre</h3>
+        <input class="titre-placeholder" type="text" placeholder="">
+        </div>
+        <div  class="categorie">
+        <h3>Catégorie</h3>
+        <select class="categorie-placeholder">
+        <option></option>
+        <option>Objets</option>
+        <option>Appartements</option>
+        <option>Hôtels & Restaurants</option>
+        </select>
+        </div>
+        <img class="line-img" src="./assets/icons/Line 1.png" alt="image d'une ligne">
+        <form class="validate-picture" action="#">
+          <input class="valider-picture-btn" type="submit" value="Valider">
         </form>
       </div>
       </div>
-  
     </div>`;
     portfolio.insertAdjacentHTML("afterend", modalContent);
     }
   }
 });
 
-
-
-
+// function to show login or logout depending on the status
 function updateMenu() {
   const menu = document.querySelector("#menu");
   const loginLink = menu.querySelector("#loginLink");
@@ -164,8 +137,8 @@ updateMenu();
 
 // Logout function
 function logout() {
-  // Clear the userId from sessionStorage
-  sessionStorage.removeItem("userId");
+  // Clear the token from sessionStorage
+  sessionStorage.removeItem("token");
 
   // Redirect the user to the index page after logout
   window.location.href = "index.html";
