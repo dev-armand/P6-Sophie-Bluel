@@ -264,10 +264,10 @@ document.addEventListener('DOMContentLoaded', function() {
 //************************************************ */ Function to add the new image to the gallery
 document.addEventListener("DOMContentLoaded", () => {
   const token = sessionStorage.getItem("token");
+  console.log("retrieved token:", token);
   createNewGalleryItem(token);
 });
 async function createNewGalleryItem(token) {
-  token.preventDefault(); // Prevent form submission
 
   const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
@@ -276,19 +276,16 @@ async function createNewGalleryItem(token) {
 
   if (selectedImage.src && titreInput.value.trim() !== "" && categorieInput.value !== "") {
       const requestData = {
-          id: 0,
           title: titreInput.value,
           imageUrl: selectedImage.src,
-          categoryId: categorieInput.value,
-          userId: 0
+          categoryId: categorieInput.value
       };
 
       let formData = new FormData()
-      formData.append("id", 0)
       formData.append("title",  titreInput.value)
       formData.append("imageUrl",  selectedImage.src)
       formData.append("categoryId", categorieInput.value)
-      formData.append("userId", 0)
+      
 
       try {
           const response = await fetch('http://localhost:5678/api/works', {
@@ -299,6 +296,7 @@ async function createNewGalleryItem(token) {
               },
               body: formData
           });
+          
 
           if (response.ok) {
               // Successfully added to the server, now add to the gallery
