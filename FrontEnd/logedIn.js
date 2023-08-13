@@ -96,11 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div  class="categorie">
         <h3>Catégorie</h3>
-        <select class="categorie-placeholder">
+        <select class="categorie-placeholder" id="categorySelect">
         <option></option>
-        <option>Objets</option>
-        <option>Appartements</option>
-        <option>Hôtels & Restaurants</option>
+        <option value="Objets">Objets</option>
+  <option value="Appartements">Appartements</option>
+  <option value="Hotels & restaurants">Hotels & restaurants</option>
         </select>
         </div>
         <img class="line-img" src="./assets/icons/Line 1.png" alt="image d'une ligne">

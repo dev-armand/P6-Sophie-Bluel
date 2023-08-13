@@ -41,7 +41,8 @@ document.addEventListener('click', function(event) {
       const data = await response.json();
       const imageUrls = data.map(item => item.imageUrl);
       const ids = data.map(item => item.id);
-      console.log(ids);
+      const category = data.map(item => item.category);
+      console.log(category);
       
       
       // Create figure elements with images and add them to the modal container
@@ -262,44 +263,87 @@ document.addEventListener('DOMContentLoaded', function() {
 };
 
 //************************************************ */ Function to add the new image to the gallery
-  document.addEventListener("DOMContentLoaded", function() {
-  const token = sessionStorage.getItem("token");
-  console.log("Token value retrieved from sessionStorage:", token);
-  createNewGalleryItem(token);
-});
+const token = sessionStorage.getItem("token");
+console.log("token", token);
 
-async function createNewGalleryItem(token) {
+// Define the formData variable here
+let formData = new FormData();
+
+async function createNewGalleryItem() {
   console.log("Received token in createNewGalleryItem:", token);
   const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
   const categorieInput = document.querySelector('.categorie-placeholder');
   const gallery = document.querySelector('.gallery');
+  
+  // Fetch the data from the API
+const apiUrl = "http://localhost:5678/api/works"; // Replace with the actual API endpoint
+try {
+  const response = await fetch(apiUrl);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const data = await response.json();
+  
+  // Get the select element
+  const categorySelect = document.getElementById('categorySelect');
+
+  // Create an array to store unique category names
+  const uniqueCategories = [];
+
+  // Iterate through the data and collect unique category names
+  data.forEach(item => {
+    const categoryName = item.category.name;
+    if (!uniqueCategories.includes(categoryName)) {
+      uniqueCategories.push(categoryName);
+    }
+  });
+
+  // Populate the select element with unique category names
+  uniqueCategories.forEach(categoryName => {
+    const option = document.createElement('option');
+    option.value = categoryName;
+    option.textContent = categoryName;
+    categorySelect.appendChild(option);
+  });
+} catch (error) {
+  console.error('Error fetching categories:', error);
+}
 
   if (selectedImage.src && titreInput.value.trim() !== "" && categorieInput.value !== "") {
-      const requestData = {
-          title: titreInput.value,
-          imageUrl: selectedImage.src,
-          categoryId: categorieInput.value
-      };
+    const requestData = {
+      title: titreInput.value,
+      imageUrl: selectedImage.src,
+      categoryId: categorieInput.value
+    };
 
-      let formData = new FormData()
-      formData.append("title",  titreInput.value)
-      formData.append("imageUrl",  selectedImage.src)
-      formData.append("categoryId", categorieInput.value)
-      
+    console.log("request data", requestData);
+
+    // Convert the category input value to an integer
+    const categoryValue = parseInt(categorieInput.value, 10);
+
+    // Check if the categoryValue is a valid number
+    if (isNaN(categoryValue)) {
+      console.error("Invalid category value:", categorieInput.value);
+      // Handle the case where the categoryValue is not a valid number
+    } else {
+      // Append values to the formData object
+      formData.append("title", titreInput.value);
+      formData.append("imageUrl", selectedImage.src);
+      formData.append("category", categoryValue);
 
       try {
-        
         console.log("Received token for Authorization:", token);
-          const response = await fetch('http://localhost:5678/api/works', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'multipart/form-data',
-                  'Authorization': 'Bearer ' + token
-              },
-              body: formData
-          });
-          
+        const response = await fetch('http://localhost:5678/api/works', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': 'Bearer ' + token
+          },
+          body: formData
+        });
+
+        console.log("response", response);
 
           if (response.ok) {
               // Successfully added to the server, now add to the gallery
@@ -335,6 +379,7 @@ async function createNewGalleryItem(token) {
           console.error('An error occurred:', error);
       }
   }
+}
 }
   
   //********************************************** */ function to add the new image to the modal
@@ -391,4 +436,5 @@ async function createNewGalleryItem(token) {
   titreInput.addEventListener('input', checkFormFields);
   categorieInput.addEventListener('change', checkFormFields);
 });
+
 
