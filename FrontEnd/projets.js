@@ -1,3 +1,5 @@
+// ************************ Management of "Mes Projets" from the main page ("Tous","Objets", "Appartements", "Hôtels & Restaurants")
+
 const objets = document.querySelector(".objets");
 const appartements = document.querySelector(".appartements");
 const hotelRestaurant = document.querySelector(".hotel-restaurants");

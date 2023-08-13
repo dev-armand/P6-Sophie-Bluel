@@ -262,13 +262,14 @@ document.addEventListener('DOMContentLoaded', function() {
 };
 
 //************************************************ */ Function to add the new image to the gallery
-document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", function() {
   const token = sessionStorage.getItem("token");
-  console.log("retrieved token:", token);
+  console.log("Token value retrieved from sessionStorage:", token);
   createNewGalleryItem(token);
 });
-async function createNewGalleryItem(token) {
 
+async function createNewGalleryItem(token) {
+  console.log("Received token in createNewGalleryItem:", token);
   const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
   const categorieInput = document.querySelector('.categorie-placeholder');
@@ -288,6 +289,8 @@ async function createNewGalleryItem(token) {
       
 
       try {
+        
+        console.log("Received token for Authorization:", token);
           const response = await fetch('http://localhost:5678/api/works', {
               method: 'POST',
               headers: {
