@@ -91,17 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="text">jpg.png: 4mo max </p>
         </div>
         <div class="titre">
-        <h3>Titre</h3>
-        <input class="titre-placeholder" type="text" placeholder="">
+          <h3>Titre</h3>
+          <input class="titre-placeholder" type="text" placeholder="">
         </div>
         <div  class="categorie">
-        <h3>Catégorie</h3>
-        <select class="categorie-placeholder" id="categorySelect">
-        <option></option>
-        <option value="Objets">Objets</option>
-  <option value="Appartements">Appartements</option>
-  <option value="Hotels & restaurants">Hotels & restaurants</option>
-        </select>
+          <h3>Catégorie</h3>
+          <select class="categorie-placeholder" id="categorySelect">
+            <option></option>
+            <option value="1">Objets</option>
+            <option value="2">Appartements</option>
+            <option value="3">Hotels & restaurants</option>
+          </select>
         </div>
         <img class="line-img" src="./assets/icons/Line 1.png" alt="image d'une ligne">
         <form class="validate-picture" action="#">

@@ -232,12 +232,13 @@ deleteButton.addEventListener("click", async () => {
     }
   }
 
- //*************************************** */ Add an event listener to the "valider" button
+ //*************************************** */ Add an event listener to the "valider" button to reset the modal to normal
 document.addEventListener('DOMContentLoaded', function() {
   const validerBtn = document.querySelector('.valider-picture-btn');
   validerBtn.addEventListener('click', createNewGalleryItem);
   const textElement = document.querySelector('.text');
     const addButton = document.querySelector('.ajouter-photo-btn');
+
 
      // Store the original source of the placeholder image
      const originalImageSrc = './assets/icons/picture-svgrepo-com1.png';
@@ -262,53 +263,58 @@ document.addEventListener('DOMContentLoaded', function() {
     addButton.style.display = 'block'; 
 };
 
+// ********************************************** Function to add options: "Objes, Appartements, Hôtels & Restaurant" in the catégorie placeholder
+document.addEventListener('DOMContentLoaded', addOption);
+async function addOption() {
+  // Fetch the data from the API
+  const apiUrl = "http://localhost:5678/api/works"; // Replace with the actual API endpoint
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+   
+    // Get the select element
+    const categorySelect = document.getElementById('categorySelect');
+ 
+    // Create an array to store unique category names
+    const uniqueCategories = [];
+ 
+    // Iterate through the data and collect unique category names
+    data.forEach(item => {
+      const categoryName = item.category.name;
+      if (!uniqueCategories.includes(categoryName)) {
+        uniqueCategories.push(categoryName);
+      } 
+    });
+
+    // Add the unique category names as options in the select element
+    uniqueCategories.forEach(categoryName => {
+      const option = document.createElement('option');
+      option.value = categoryName;
+      option.textContent = categoryName;
+      categorySelect.appendChild(option);
+    });
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
 //************************************************ */ Function to add the new image to the gallery
 const token = sessionStorage.getItem("token");
-console.log("token", token);
 
 // Define the formData variable here
 let formData = new FormData();
 
 async function createNewGalleryItem() {
-  console.log("Received token in createNewGalleryItem:", token);
+  console.log("Received token in createNewGalleryItem:");
   const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
   const categorieInput = document.querySelector('.categorie-placeholder');
   const gallery = document.querySelector('.gallery');
   
-  // Fetch the data from the API
-const apiUrl = "http://localhost:5678/api/works"; // Replace with the actual API endpoint
-try {
-  const response = await fetch(apiUrl);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  const data = await response.json();
-  
-  // Get the select element
-  const categorySelect = document.getElementById('categorySelect');
-
-  // Create an array to store unique category names
-  const uniqueCategories = [];
-
-  // Iterate through the data and collect unique category names
-  data.forEach(item => {
-    const categoryName = item.category.name;
-    if (!uniqueCategories.includes(categoryName)) {
-      uniqueCategories.push(categoryName);
-    }
-  });
-
-  // Populate the select element with unique category names
-  uniqueCategories.forEach(categoryName => {
-    const option = document.createElement('option');
-    option.value = categoryName;
-    option.textContent = categoryName;
-    categorySelect.appendChild(option);
-  });
-} catch (error) {
-  console.error('Error fetching categories:', error);
-}
+ 
 
   if (selectedImage.src && titreInput.value.trim() !== "" && categorieInput.value !== "") {
     const requestData = {
@@ -317,7 +323,7 @@ try {
       categoryId: categorieInput.value
     };
 
-    console.log("request data", requestData);
+    console.log("Request data", requestData);
 
     // Convert the category input value to an integer
     const categoryValue = parseInt(categorieInput.value, 10);
@@ -333,11 +339,10 @@ try {
       formData.append("category", categoryValue);
 
       try {
-        console.log("Received token for Authorization:", token);
+        console.log("Received token for Authorization:");
         const response = await fetch('http://localhost:5678/api/works', {
           method: 'POST',
           headers: {
-            'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer ' + token
           },
           body: formData
@@ -416,6 +421,7 @@ try {
     modalImagesContainer.appendChild(figureElement);
   
     imageIndex++; // Increment the index for the next image
+    
 }
 
 
