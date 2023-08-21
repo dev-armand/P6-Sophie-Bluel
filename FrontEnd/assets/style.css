@@ -511,9 +511,18 @@ color: white;
 	background: rgb(166, 166, 166);
 	border: none;
 	height: 36px;
-	width: 536px;
+	width: 236px;
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	margin : 2em auto ;
+	text-align: center;
+	border-radius: 60px ;
 }
 
+.valider-picture-btn:hover {
+	cursor: pointer;
+}
 .ajouter-photos {
 	overflow: hidden;
 }

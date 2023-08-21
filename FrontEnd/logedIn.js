@@ -98,15 +98,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3>Catégorie</h3>
           <select class="categorie-placeholder" id="categorySelect">
             <option></option>
-            <option value="1">Objets</option>
-            <option value="2">Appartements</option>
-            <option value="3">Hotels & restaurants</option>
+            
           </select>
         </div>
         <img class="line-img" src="./assets/icons/Line 1.png" alt="image d'une ligne">
-        <form class="validate-picture" action="#">
-          <input class="valider-picture-btn" type="submit" value="Valider">
-        </form>
+        <div class="validate-picture" >
+        <button onclick="createNewGalleryItem(event); addImageToModal();" class="valider-picture-btn" type="button">Valider</button>
+        </div>
       </div>
       </div>
     </div>`;
