@@ -1,3 +1,4 @@
+const urlApi = "http://localhost:5678/api";
 const loginButton = document.querySelector('#loginButton');
 loginButton.addEventListener('click', loginForm);
 
@@ -20,7 +21,7 @@ async function loginForm() {
   };
 
   try {
-    const response = await fetch("http://localhost:5678/api/users/login", {
+    const response = await fetch(`${urlApi}/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,3 +1,4 @@
+const urlApi = "http://localhost:5678/api";
 const body = document.body;
 
 // Function to show the modal
@@ -13,15 +14,27 @@ function closeModalHandler() {
   body.classList.remove("overflow-hidden");
 }
 
-// Attach event listener to the document 
+// Attach event listener to close the modal
 document.addEventListener('click', function(event) {
-  if (event.target.classList.contains('vectorx')) {
+  if (event.target.classList.contains('close')) {
     closeModalHandler();
   }
 });
 
+// Attach event listener to acces the 2nd page or go back to the 1st page
+document.addEventListener('DOMContentLoaded', function() {
+  const galeriePhoto2 = document.querySelector('.galerie-photo2');
+  const addPicture = document.querySelector('.add-picture-btn');
+  const leftArrow = document.querySelector('.vector-left-arrow');
+  // Access second page of the modal
+  addPicture.onclick = function() {
+    galeriePhoto2.classList.remove('display-none');
+  };
+  // Go back to the first page of the modal
+  leftArrow.onclick = function() {
+    galeriePhoto2.classList.add('display-none');
+  };
   // Load token from session storage
-  document.addEventListener("DOMContentLoaded", () => {
   const token = sessionStorage.getItem("token");
   fetchImagesAndUpdateModal(token);
 });
@@ -29,7 +42,7 @@ document.addEventListener('click', function(event) {
 //**************************************************** */ Function to fetch all images from the API and update the modal images
   async function fetchImagesAndUpdateModal(tokenFromSession) {
     console.log("Received token in fetImagesAndUpdateModal", tokenFromSession);
-    const apiUrl = "http://localhost:5678/api/works";
+    const apiUrl = `${urlApi}/works`;
     const modalImagesContainer = document.querySelector(".galerie-photo-container");
 
     try {
@@ -57,15 +70,15 @@ document.addEventListener('click', function(event) {
         const figcaptionElement = document.createElement("figcaption");
         figcaptionElement.textContent = "éditer";
 
-        const vector1Element = document.createElement("img");
-        vector1Element.src = "./assets/icons/Group 10.png";
-        vector1Element.alt = "icone poubelle";
-        vector1Element.classList.add("galerie-photo-vector", "vector1");
+        const binIconElement = document.createElement("img");
+        binIconElement.src = "./assets/icons/Group 10.png";
+        binIconElement.alt = "icone poubelle";
+        binIconElement.classList.add("galerie-photo-vector", "binIcon");
 
-        // Add the img, figcaption, and vector1 elements to the figure element
+        // Add the img, figcaption, and binIcon elements to the figure element
         figureElement.appendChild(imgElement);
         figureElement.appendChild(figcaptionElement);
-        figureElement.appendChild(vector1Element);
+        figureElement.appendChild(binIconElement);
 
         // Add the figure element to the modal container
         modalImagesContainer.appendChild(figureElement);
@@ -76,35 +89,35 @@ document.addEventListener('click', function(event) {
         console.error('Error fetching images:', error);
     }
 
-  //******************************************** */ Attach event listeners to the "vector1" to delete images in the modal
-  const vector1Elements = document.querySelectorAll(".galerie-photo-vector.vector1");
-  vector1Elements.forEach(vector1Element => {
-  vector1Element.addEventListener("click", async () => {
-    const figureElement = vector1Element.closest(".galerie-photo-fig");
+  //******************************************** */ Attach event listeners to delete images in the modal
+  const binIconElements = document.querySelectorAll(".galerie-photo-vector.binIcon");
+  binIconElements.forEach(binIconElement => {
+  binIconElement.addEventListener("click", async () => {
+    const figureElement = binIconElement.closest(".galerie-photo-fig");
     if (figureElement) {
       const imgElement = figureElement.querySelector(".galerie-photo-img");
       const dataImgValue = figureElement.dataset.img;
-
+ 
       if (tokenFromSession) {
         try {
-          const apiUrl = `http://localhost:5678/api/works/${getImageIdFromImageUrl(imgElement.src)}`;
+          const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
           const response = await fetch(apiUrl, {
             method: "DELETE",
             headers: {
               'Authorization': `Bearer ${tokenFromSession}`
             }
           });
-
+ 
           if (!response.ok) {
             throw new Error('Failed to delete image');
           }
-
+ 
           // Remove all elements with the same data-img value
           const elementsWithSameDataImg = document.querySelectorAll(`[data-img="${dataImgValue}"]`);
           elementsWithSameDataImg.forEach(element => {
             element.remove();
           });
-
+ 
           console.log(`All elements with data-img="${dataImgValue}" deleted.`);
         } catch (error) {
           console.error('Error deleting image:', error);
@@ -116,17 +129,17 @@ document.addEventListener('click', function(event) {
       console.error("Parent figure element not found.");
     }
   });
-});
+ });
 
  // Function to get image IDs from URL
- async function getImageIdFromImageUrl() {
-  const apiUrl = "http://localhost:5678/api/works";
+async function getImageIdFromImageUrl() {
+  const apiUrl = `${urlApi}/works`;
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-
+ 
     const data = await response.json();
     const imageIds = data.map(item => item.imageId);
     return imageIds;
@@ -134,16 +147,16 @@ document.addEventListener('click', function(event) {
     console.error('Error:', error);
     return []; 
   }
-}
-//********************************************** */ Delete all images with "supprimer la galerie"
-const deleteButton = document.querySelector(".delete");
-deleteButton.addEventListener("click", async () => {
+ }
+ //********************************************** */ Delete all images with "supprimer la galerie"
+ const deleteButton = document.querySelector(".delete");
+ deleteButton.addEventListener("click", async () => {
   const figureElements = document.querySelectorAll('figure');
   const deletedDataImgValues = [];
-
+ 
   // Get the gallery container
   const galleryContainer = document.querySelector('.gallery');
-
+ 
   if (figureElements.length > 0) {
     if (tokenFromSession) {
       try {
@@ -155,39 +168,39 @@ deleteButton.addEventListener("click", async () => {
             console.log("Skipping figure element without data-img attribute.");
             continue;
           }
-
+ 
           const imgElement = figureElement.querySelector(".galerie-photo-img");
           if (!imgElement) {
             continue;
           }
-
-          const apiUrl = `http://localhost:5678/api/works/${getImageIdFromImageUrl(imgElement.src)}`;
+ 
+          const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
           const response = await fetch(apiUrl, {
             method: "DELETE",
             headers: {
               'Authorization': `Bearer ${tokenFromSession}`
             }
           });
-
+ 
           if (!response.ok) {
             throw new Error('Failed to delete image');
           }
-
+ 
           // Add the data-img value to the list of deleted values
           deletedDataImgValues.push(dataImgValue);
-
+ 
           // Remove the current figure element from the modal
           figureElement.remove();
-
+ 
           console.log(`Element with data-img="${dataImgValue}" deleted.`);
         }
-
+ 
         // Remove all figure elements from the gallery container
         const galleryFigureElements = galleryContainer.querySelectorAll('figure');
         galleryFigureElements.forEach((figureElement) => {
           figureElement.remove();
         });
-
+ 
         console.log("All elements with data-img deleted from the modal and the gallery.");
       } catch (error) {
         console.error('Error deleting image:', error);
@@ -198,25 +211,10 @@ deleteButton.addEventListener("click", async () => {
   } else {
     console.error("No figure elements found.");
   }
-});
+ });
 }
 
-//**************************************************** */ Show second page of the modal when clicking on "ajouter photo" button
-document.addEventListener('DOMContentLoaded', function() {
-  const galeriePhoto2 = document.querySelector('.galerie-photo2');
-  const addPicture = document.querySelector('.add-picture-btn');
-  const leftArrow = document.querySelector('.vector-left-arrow');
-  
-  addPicture.onclick = function() {
-    galeriePhoto2.classList.remove('display-none');
-  };
-
-  leftArrow.onclick = function() {
-    galeriePhoto2.classList.add('display-none');
-  };
-});
-
-//**************************************************** */ function to show the selected image file
+// Function to show the selected image file
 function handleImageSelect(event) {
   const selectedImage = document.getElementById('selectedImage');
   const file = event.target.files[0]; // Get the selected file;
@@ -239,141 +237,129 @@ function handleImageSelect(event) {
   }
 }
 
-//*************************************************** Function to add options: "Objes, Appartements, Hôtels & Restaurant" in the catégorie placeholder
+//*************************************************** Function to fetch category options from the API: "Objes, Appartements, Hôtels & Restaurant"
 document.addEventListener('DOMContentLoaded', addOption);
 async function addOption() {
-  // Fetch the data from the API
-  const apiUrl = "http://localhost:5678/api/works";
-  try {
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    // Fetch the data from the API
+    const apiUrl = `${urlApi}/works`;
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+    
+      // Get the select element
+      const categorySelect = document.getElementById('categorySelect');
+  
+      // Create an array to store unique category names
+      const uniqueCategories = [];
+  
+      // Iterate through the data and collect unique category names
+      data.forEach(item => {
+        const categoryName = item.category.name;
+        if (!uniqueCategories.includes(categoryName)) {
+          uniqueCategories.push(categoryName);
+        } 
+      });
+
+      // Add the unique category names as options in the select element
+      uniqueCategories.forEach(categoryName => {
+        const option = document.createElement('option');
+        option.value = categoryName;
+        option.textContent = categoryName;
+        categorySelect.appendChild(option);
+      });
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-    const data = await response.json();
-   
-    // Get the select element
-    const categorySelect = document.getElementById('categorySelect');
- 
-    // Create an array to store unique category names
-    const uniqueCategories = [];
- 
-    // Iterate through the data and collect unique category names
-    data.forEach(item => {
-      const categoryName = item.category.name;
-      if (!uniqueCategories.includes(categoryName)) {
-        uniqueCategories.push(categoryName);
-      } 
-    });
-
-    // Add the unique category names as options in the select element
-    uniqueCategories.forEach(categoryName => {
-      const option = document.createElement('option');
-      option.value = categoryName;
-      option.textContent = categoryName;
-      categorySelect.appendChild(option);
-    });
-
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
 }
 
  //*************************************** */ Add event listener to the button "valider": Change button color, add img to the modal and gallery, reset modal to normal
- document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
   event.preventDefault();
   // Function to change color of the button "Valider"
-function checkFormFields() {
+  function checkFormFields() {
   if (selectedImage.src && titreInput.value.trim() !== "" && categorieInput.value !== "") {
       validerBtn.classList.add('green-color');
   } else {
       validerBtn.classList.remove('green-color');
   }
-}
+  }
 
-// Add event listeners for input changes
-const selectedImage = document.getElementById('selectedImage');
-const titreInput = document.querySelector('.titre-placeholder');
-const categorieInput = document.querySelector('.categorie-placeholder');
-
-selectedImage.addEventListener('load', checkFormFields);
-titreInput.addEventListener('input', checkFormFields);
-categorieInput.addEventListener('change', checkFormFields);
-
-//*************************************************** */ Function to add the new image to the gallery
-const token = sessionStorage.getItem("token");
-
-async function createNewGalleryItem() {
-  event.preventDefault();
-  console.log("Received token in createNewGalleryItem:", token);
-  const selectedImageFile = document.getElementById('getFile').files[0];
+  // Add event listeners for input changes
+  const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
   const categorieInput = document.querySelector('.categorie-placeholder');
-  const gallery = document.querySelector('.gallery');
 
-  const formData = new FormData();
+  selectedImage.addEventListener('load', checkFormFields);
+  titreInput.addEventListener('input', checkFormFields);
+  categorieInput.addEventListener('change', checkFormFields);
 
-  formData.append("title", titreInput.value);
-  formData.append("image", selectedImageFile); // Append the image file, not the HTML element
-  formData.append("category", categorieInput.value);
+  //*************************************************** */ Function to add the new image to the gallery
+  const token = sessionStorage.getItem("token");
+  async function createNewGalleryItem() {
+    event.preventDefault();
+    console.log("Received token in createNewGalleryItem:", token);
+    const selectedImageFile = document.getElementById('getFile').files[0];
+    const titreInput = document.querySelector('.titre-placeholder');
+    const categorieInput = document.querySelector('.categorie-placeholder');
+    const gallery = document.querySelector('.gallery');
 
-  console.log(formData.get('title'));
-  console.log(formData.get('category'));
+    const formData = new FormData();
 
-  console.log("Received token for Authorization:", token);
-  try {
-    const response = await fetch('http://localhost:5678/api/works', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      },
-      body: formData
-    });
+    formData.append("title", titreInput.value);
+    formData.append("image", selectedImageFile.src); // Append the image file, not the HTML element
+    formData.append("category", categorieInput.value);
 
-    if (response.ok) {
-      const responseData = await response.json();
-      console.log("responseData", responseData);
+    console.log(formData.get('title'));
+    console.log(formData.get('category'));
 
-      // Create new elements and append them to the gallery
-      const newFigure = document.createElement('figure');
-      const newImage = document.createElement('img');
-      const newFigCaption = document.createElement('figcaption');
+    console.log("Received token for Authorization:", token);
+    try {
+      const response = await fetch(`${urlApi}/works`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        },
+        body: formData
+      });
 
-      newFigure.className = categorieInput.value;
-      newImage.src = URL.createObjectURL(selectedImageFile);
-      newFigCaption.textContent = titreInput.value;
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("responseData", responseData);
 
-      newFigure.appendChild(newImage);
-      newFigure.appendChild(newFigCaption);
-      gallery.appendChild(newFigure);
+        // Create new elements and append them to the gallery
+        const newFigure = document.createElement('figure');
+        const newImage = document.createElement('img');
+        const newFigCaption = document.createElement('figcaption');
 
-      closeModalHandler();
+        newFigure.className = categorieInput.value;
+        newImage.src = URL.createObjectURL(selectedImageFile);
+        newFigCaption.textContent = titreInput.value;
 
-      // Add the image to the modal
-      addImageToModal(newImage);
+        newFigure.appendChild(newImage);
+        newFigure.appendChild(newFigCaption);
+        gallery.appendChild(newFigure);
 
-    } else {
-      console.error('Failed to add the image to the server.');
+        closeModalHandler();
+
+        // Add the image to the modal
+        addImageToModal(newImage);
+
+      } else {
+        console.error('Failed to add the image to the server.');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
     }
-  } catch (error) {
-    console.error('An error occurred:', error);
   }
-}
-
-function handleImageSelect(event) {
-  const selectedImage = document.getElementById('selectedImage');
-  const selectedFile = event.target.files[0];
-
-  if (selectedFile) {
-    selectedImage.src = URL.createObjectURL(selectedFile);
-    selectedImage.style.display = 'block';
-  }
-}
 
   //*************************************************** */ function to add the new image to the modal
-  let imageIndex = 11;
   function addImageToModal(src) {
     const modalImagesContainer = document.querySelector('.galerie-photo-container'); // Update the selector accordingly
-
+    let imageIndex = [figureElement.dataset.img.length -1];
     const figureElement = document.createElement("figure");
     figureElement.classList.add("galerie-photo-fig");
     figureElement.dataset.img = (imageIndex + 1).toString();
@@ -387,49 +373,50 @@ function handleImageSelect(event) {
     const figcaptionElement = document.createElement("figcaption");
     figcaptionElement.textContent = "éditer";
 
-    const vector1Element = document.createElement("img");
-    vector1Element.src = "./assets/icons/Group 10.png";
-    vector1Element.alt = "icone poubelle";
-    vector1Element.classList.add("galerie-photo-vector", "vector1");
+    const binIconElement = document.createElement("img");
+    binIconElement.src = "./assets/icons/Group 10.png";
+    binIconElement.alt = "icone poubelle";
+    binIconElement.classList.add("galerie-photo-vector", "binIcon");
 
-    // Add the img, figcaption, and vector1 elements to the figure element
+    // Add the img, figcaption, and binIcon elements to the figure element
     figureElement.appendChild(imgElement);
     figureElement.appendChild(figcaptionElement);
-    figureElement.appendChild(vector1Element);
+    figureElement.appendChild(binIconElement);
 
     // Add the figure element to the modal container
     modalImagesContainer.appendChild(figureElement);
     
     imageIndex++; // Increment the index for the next image
-}
+  }
 
-// *************************************************** */ Reset the modal to normal
-const validerBtn = document.querySelector('.valider-picture-btn');
-  validerBtn.addEventListener('click', createNewGalleryItem);
+  // *************************************************** */ Reset the modal to normal
+  const validerBtn = document.querySelector('.valider-picture-btn');
   const textElement = document.querySelector('.text');
   const addButton = document.querySelector('.ajouter-photo-btn');
 
   // Store the original source of the placeholder image
   const originalImageSrc = './assets/icons/picture-svgrepo-com1.png';
   const originalImageClass = 'selected-img';
+  validerBtn.addEventListener("click", createNewGalleryItem);
 
-  // Attach click event to the "Valider" button to hide the second page
-  validerBtn.onclick = function() {
-  const galeriePhoto2 = document.querySelector('.galerie-photo2');
-  galeriePhoto2.classList.add('display-none');
+  // Attach click event to the "Valider" button
+  validerBtn.addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent form submission
 
-  // Reset the selectedImage source to the original placeholder image
-  selectedImage.src = originalImageSrc;
-  selectedImage.className = originalImageClass;
+      const galeriePhoto2 = document.querySelector('.galerie-photo2');
+      galeriePhoto2.classList.add('display-none');
 
-  // Clear other inputs and reset button color
-  titreInput.value = "";
-  categorieInput.value = "";
-  validerBtn.classList.remove('green-color');
+      // Reset the selectedImage source to the original placeholder image
+      selectedImage.src = originalImageSrc;
+      selectedImage.className = originalImageClass;
 
-  // Show the "ajouter photos" div back to normal
-  textElement.style.display = 'block'; 
-  addButton.style.display = 'block'; 
-};
+      // Clear other inputs and reset button color
+      titreInput.value = "";
+      categorieInput.value = "";
+      validerBtn.classList.remove('green-color');
 
+      // Show the "ajouter photos" div back to normal
+      textElement.style.display = 'block'; 
+      addButton.style.display = 'block';
+  });
 });

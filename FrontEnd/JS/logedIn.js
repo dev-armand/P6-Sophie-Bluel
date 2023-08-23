@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const modalContent = `<div id="modal" class="modal" >
       <div class="galerie-photo-box">
       <div class="galerie-photo galerie-photo1">
-        <img class="galerie-photo-vector vectorx" src="./assets/icons/xmark.png" alt="X">
+        <img class="galerie-photo-vector close" src="./assets/icons/xmark.png" alt="X">
         <h2>Galerie photo</h2>
         <div class="galerie-photo-container">
         </div>
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </form>
       </div>
       <div  class="galerie-photo galerie-photo2 display-none">
-        <img class="galerie-photo-vector vectorx" src="./assets/icons/xmark.png" alt="icone image">
+        <img class="galerie-photo-vector close" src="./assets/icons/xmark.png" alt="icone image">
         <img class="galerie-photo-vector vector-left-arrow" src="./assets/icons/arrow-left.png" alt="arrow icon">
         <h2>Ajout photo</h2>
         
@@ -97,14 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <div  class="categorie">
           <h3>Catégorie</h3>
           <select class="categorie-placeholder" id="categorySelect">
-            <option></option>
-            
+            <option>
+            </option>
           </select>
         </div>
         <img class="line-img" src="./assets/icons/Line 1.png" alt="image d'une ligne">
-        <div class="validate-picture" >
-        <button onclick="createNewGalleryItem(event); addImageToModal();" class="valider-picture-btn" type="button">Valider</button>
-        </div>
+        <form class="validate-picture" >
+        <button class="valider-picture-btn" type="button">Valider</button>
+        </form>
       </div>
       </div>
     </div>`;
