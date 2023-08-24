@@ -39,12 +39,59 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchImagesAndUpdateModal(token);
 });
 
-//**************************************************** */ Function to fetch all images from the API and update the modal images
-  async function fetchImagesAndUpdateModal(tokenFromSession) {
-    console.log("Received token in fetImagesAndUpdateModal", tokenFromSession);
-    const apiUrl = `${urlApi}/works`;
-    const modalImagesContainer = document.querySelector(".galerie-photo-container");
+//**************************************************** */ Function to fetch images from the API and update the modal images
+async function fetchImagesAndUpdateModal(token) {
+  console.log("Received token in fetchImagesAndUpdateModal", token);
+  const apiUrl = `${urlApi}/works`;
+  const modalImagesContainer = document.querySelector(".galerie-photo-container");
 
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    const imageUrls = data.map(item => item.imageUrl);
+    const ids = data.map(item => item.id);
+    const category = data.map(item => item.category);
+    console.log('add imaged to the modal', category);
+    
+    // Create figure elements with images and add them to the modal container
+    imageUrls.forEach((imageUrl, index) => {
+      const figureElement = document.createElement("figure");
+      figureElement.classList.add("galerie-photo-fig");
+      figureElement.dataset.img = (index + 1).toString();
+
+      const imgElement = document.createElement("img");
+      imgElement.src = imageUrl;
+      imgElement.classList.add("galerie-photo-img");
+
+      const figcaptionElement = document.createElement("figcaption");
+      figcaptionElement.textContent = "éditer";
+
+      const binIconElement = document.createElement("img");
+      binIconElement.src = "./assets/icons/Group 10.png";
+      binIconElement.alt = "icone poubelle";
+      binIconElement.classList.add("galerie-photo-vector", "binIcon");
+
+      // Add the img, figcaption, and binIcon elements to the figure element
+      figureElement.appendChild(imgElement);
+      figureElement.appendChild(figcaptionElement);
+      figureElement.appendChild(binIconElement);
+
+      // Add the figure element to the modal container
+      modalImagesContainer.appendChild(figureElement);
+    });
+
+      console.log("Images updated in the modal.");
+    } catch (error) {
+      console.error('Error fetching images:', error);
+  }
+
+    // Function to get image IDs from URL
+  async function getImageIdFromImageUrl() {
+    const apiUrl = `${urlApi}/works`;
     try {
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -52,73 +99,110 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       const data = await response.json();
-      const imageUrls = data.map(item => item.imageUrl);
-      const ids = data.map(item => item.id);
-      const category = data.map(item => item.category);
-      console.log(category);
-      
-      // Create figure elements with images and add them to the modal container
-      imageUrls.forEach((imageUrl, index) => {
-        const figureElement = document.createElement("figure");
-        figureElement.classList.add("galerie-photo-fig");
-        figureElement.dataset.img = (index + 1).toString();
-
-        const imgElement = document.createElement("img");
-        imgElement.src = imageUrl;
-        imgElement.classList.add("galerie-photo-img");
-
-        const figcaptionElement = document.createElement("figcaption");
-        figcaptionElement.textContent = "éditer";
-
-        const binIconElement = document.createElement("img");
-        binIconElement.src = "./assets/icons/Group 10.png";
-        binIconElement.alt = "icone poubelle";
-        binIconElement.classList.add("galerie-photo-vector", "binIcon");
-
-        // Add the img, figcaption, and binIcon elements to the figure element
-        figureElement.appendChild(imgElement);
-        figureElement.appendChild(figcaptionElement);
-        figureElement.appendChild(binIconElement);
-
-        // Add the figure element to the modal container
-        modalImagesContainer.appendChild(figureElement);
-      });
-
-        console.log("Images updated in the modal.");
-      } catch (error) {
-        console.error('Error fetching images:', error);
+      const imageIds = data.map(item => item.imageId);
+      return imageIds;
+    } catch (error) {
+      console.error('Error:', error);
+      return []; 
+    }
     }
 
-  //******************************************** */ Attach event listeners to delete images in the modal
+  //******************************************** */ Delete images in the modal
   const binIconElements = document.querySelectorAll(".galerie-photo-vector.binIcon");
   binIconElements.forEach(binIconElement => {
-  binIconElement.addEventListener("click", async () => {
-    const figureElement = binIconElement.closest(".galerie-photo-fig");
-    if (figureElement) {
-      const imgElement = figureElement.querySelector(".galerie-photo-img");
-      const dataImgValue = figureElement.dataset.img;
- 
-      if (tokenFromSession) {
-        try {
-          const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
-          const response = await fetch(apiUrl, {
-            method: "DELETE",
-            headers: {
-              'Authorization': `Bearer ${tokenFromSession}`
+    binIconElement.addEventListener("click", async () => {
+      const figureElement = binIconElement.closest(".galerie-photo-fig");
+      if (figureElement) {
+        const imgElement = figureElement.querySelector(".galerie-photo-img");
+        const dataImgValue = figureElement.dataset.img;
+  
+        if (token) {
+          try {
+            const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
+            const response = await fetch(apiUrl, {
+              method: "DELETE",
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+  
+            if (!response.ok) {
+              throw new Error('Failed to delete image');
             }
-          });
- 
-          if (!response.ok) {
-            throw new Error('Failed to delete image');
+  
+            // Remove all elements with the same data-img value
+            const elementsWithSameDataImg = document.querySelectorAll(`[data-img="${dataImgValue}"]`);
+            elementsWithSameDataImg.forEach(element => {
+              element.remove();
+            });
+  
+            console.log(`All elements with data-img="${dataImgValue}" deleted.`);
+          } catch (error) {
+            console.error('Error deleting image:', error);
           }
- 
-          // Remove all elements with the same data-img value
-          const elementsWithSameDataImg = document.querySelectorAll(`[data-img="${dataImgValue}"]`);
-          elementsWithSameDataImg.forEach(element => {
-            element.remove();
+        } else {
+          console.error("Image ID not found.");
+        }
+      } else {
+        console.error("Parent figure element not found.");
+      }
+    });
+  });
+
+  //******************************************** */ Delete all images with "supprimer la galerie"
+  const deleteButton = document.querySelector(".delete");
+  deleteButton.addEventListener("click", async () => {
+    const figureElements = document.querySelectorAll('figure');
+    const deletedDataImgValues = [];
+
+    // Get the gallery container
+    const galleryContainer = document.querySelector('.gallery');
+
+    if (figureElements.length > 0) {
+      if (token) {
+        try {
+          // Loop through each figure element
+          for (const figureElement of figureElements) {
+            // Check if the figure element has the data-img attribute
+            const dataImgValue = figureElement.dataset.img;
+            if (!dataImgValue) {
+              console.log("Skipping figure element without data-img attribute.");
+              continue;
+            }
+
+            const imgElement = figureElement.querySelector(".galerie-photo-img");
+            if (!imgElement) {
+              continue;
+            }
+
+            const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
+            const response = await fetch(apiUrl, {
+              method: "DELETE",
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to delete image');
+            }
+
+            // Add the data-img value to the list of deleted values
+            deletedDataImgValues.push(dataImgValue);
+
+            // Remove the current figure element from the modal
+            figureElement.remove();
+
+            console.log(`Element with data-img="${dataImgValue}" deleted.`);
+          }
+
+          // Remove all figure elements from the gallery container
+          const galleryFigureElements = galleryContainer.querySelectorAll('figure');
+          galleryFigureElements.forEach((figureElement) => {
+            figureElement.remove();
           });
- 
-          console.log(`All elements with data-img="${dataImgValue}" deleted.`);
+
+          console.log("All elements with data-img deleted from the modal and the gallery.");
         } catch (error) {
           console.error('Error deleting image:', error);
         }
@@ -126,92 +210,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Image ID not found.");
       }
     } else {
-      console.error("Parent figure element not found.");
+      console.error("No figure elements found.");
     }
   });
- });
-
- // Function to get image IDs from URL
-async function getImageIdFromImageUrl() {
-  const apiUrl = `${urlApi}/works`;
-  try {
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
- 
-    const data = await response.json();
-    const imageIds = data.map(item => item.imageId);
-    return imageIds;
-  } catch (error) {
-    console.error('Error:', error);
-    return []; 
-  }
- }
- //********************************************** */ Delete all images with "supprimer la galerie"
- const deleteButton = document.querySelector(".delete");
- deleteButton.addEventListener("click", async () => {
-  const figureElements = document.querySelectorAll('figure');
-  const deletedDataImgValues = [];
- 
-  // Get the gallery container
-  const galleryContainer = document.querySelector('.gallery');
- 
-  if (figureElements.length > 0) {
-    if (tokenFromSession) {
-      try {
-        // Loop through each figure element
-        for (const figureElement of figureElements) {
-          // Check if the figure element has the data-img attribute
-          const dataImgValue = figureElement.dataset.img;
-          if (!dataImgValue) {
-            console.log("Skipping figure element without data-img attribute.");
-            continue;
-          }
- 
-          const imgElement = figureElement.querySelector(".galerie-photo-img");
-          if (!imgElement) {
-            continue;
-          }
- 
-          const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
-          const response = await fetch(apiUrl, {
-            method: "DELETE",
-            headers: {
-              'Authorization': `Bearer ${tokenFromSession}`
-            }
-          });
- 
-          if (!response.ok) {
-            throw new Error('Failed to delete image');
-          }
- 
-          // Add the data-img value to the list of deleted values
-          deletedDataImgValues.push(dataImgValue);
- 
-          // Remove the current figure element from the modal
-          figureElement.remove();
- 
-          console.log(`Element with data-img="${dataImgValue}" deleted.`);
-        }
- 
-        // Remove all figure elements from the gallery container
-        const galleryFigureElements = galleryContainer.querySelectorAll('figure');
-        galleryFigureElements.forEach((figureElement) => {
-          figureElement.remove();
-        });
- 
-        console.log("All elements with data-img deleted from the modal and the gallery.");
-      } catch (error) {
-        console.error('Error deleting image:', error);
-      }
-    } else {
-      console.error("Image ID not found.");
-    }
-  } else {
-    console.error("No figure elements found.");
-  }
- });
 }
 
 // Function to show the selected image file
@@ -276,32 +277,31 @@ async function addOption() {
     }
 }
 
- //*************************************** */ Add event listener to the button "valider": Change button color, add img to the modal and gallery, reset modal to normal
+//*************************************************** */  Add event listener to: Change button color, add img to the modal and gallery, reset modal to normal
 document.addEventListener('DOMContentLoaded', function() {
-  event.preventDefault();
-  // Function to change color of the button "Valider"
-  function checkFormFields() {
+  const selectedImage = document.getElementById('selectedImage');
+  const titreInput = document.querySelector('.titre-placeholder');
+  const categorieInput = document.querySelector('.categorie-placeholder');
+
+   //*************************************************** */ Function to change color of the button "Valider"
+   function checkFormFields() {
+    const validerBtn = document.querySelector('.valider-picture-btn');
   if (selectedImage.src && titreInput.value.trim() !== "" && categorieInput.value !== "") {
       validerBtn.classList.add('green-color');
   } else {
       validerBtn.classList.remove('green-color');
   }
   }
-
+    
   // Add event listeners for input changes
-  const selectedImage = document.getElementById('selectedImage');
-  const titreInput = document.querySelector('.titre-placeholder');
-  const categorieInput = document.querySelector('.categorie-placeholder');
-
   selectedImage.addEventListener('load', checkFormFields);
   titreInput.addEventListener('input', checkFormFields);
   categorieInput.addEventListener('change', checkFormFields);
-
+  
   //*************************************************** */ Function to add the new image to the gallery
-  const token = sessionStorage.getItem("token");
-  async function createNewGalleryItem() {
-    event.preventDefault();
+  async function createNewGalleryItem(token) {
     console.log("Received token in createNewGalleryItem:", token);
+    
     const selectedImageFile = document.getElementById('getFile').files[0];
     const titreInput = document.querySelector('.titre-placeholder');
     const categorieInput = document.querySelector('.categorie-placeholder');
@@ -310,22 +310,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const formData = new FormData();
 
     formData.append("title", titreInput.value);
-    formData.append("image", selectedImageFile.src); // Append the image file, not the HTML element
+    formData.append("image", selectedImageFile); // Append the image file, not the HTML element
     formData.append("category", categorieInput.value);
 
     console.log(formData.get('title'));
     console.log(formData.get('category'));
+    console.log(formData.get('image'));
 
     console.log("Received token for Authorization:", token);
     try {
       const response = await fetch(`${urlApi}/works`, {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer ' + token
+          'Authorization': `Bearer ${token}`
         },
-        body: formData
+        body: formData,
       });
-
+      
       if (response.ok) {
         const responseData = await response.json();
         console.log("responseData", responseData);
@@ -397,12 +398,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // Store the original source of the placeholder image
   const originalImageSrc = './assets/icons/picture-svgrepo-com1.png';
   const originalImageClass = 'selected-img';
-  validerBtn.addEventListener("click", createNewGalleryItem);
 
-  // Attach click event to the "Valider" button
   validerBtn.addEventListener('click', function(event) {
       event.preventDefault(); // Prevent form submission
 
+      // Attach click event to the "Valider" button
+      if (!selectedImage.src || !titreInput.value.trim() || !categorieInput.value) {
+        alert('Merci de remplire les champs vides.');
+      } else {
+        createNewGalleryItem();
+      }
       const galeriePhoto2 = document.querySelector('.galerie-photo2');
       galeriePhoto2.classList.add('display-none');
 

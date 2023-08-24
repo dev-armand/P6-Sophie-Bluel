@@ -4,12 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //**************************************************** */ Function to fetch all images from the API and update the gallery images
  async function fetchImagesAndUpdateGallery() {
-  const apiUrl = "http://localhost:5678/api/works";
+  const apiUrl = `${urlApi}/works`;
   const galleryImagesContainer = document.querySelector(".gallery");
 
   try {
     const response = await fetch(apiUrl);
-    console.log(fetchImagesAndUpdateGallery, 'try')
+
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const imageUrls = data.map(item => item.imageUrl);
     const category = data.map(item => item.category);
     const title = data.map(item => item.title);
-    console.log(category);
+    console.log('add images to the gallery', category);
     
     // Create figure elements with images and add them to the gallery container
     imageUrls.forEach((imageUrl, index) => {
@@ -47,4 +47,26 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error('Error fetching images:', error);
   }
+}
+
+//**************************************************** */  Management of "Mes Projets" for the gallery
+// Event listener for the filter buttons ("Tous","Objets", "Appartements", "Hôtels & Restaurants")
+document.querySelector(".projects-filtres").addEventListener("click", event => {
+  const target = event.target;
+  if (target.classList.contains("projects-btn")) {
+    const filterClass = target.dataset.filter;
+    showFiguresByClass(filterClass);
+  }
+});
+
+// Function to show/hide figures based on their class
+function showFiguresByClass(className) {
+  const figures = document.querySelectorAll(".gallery figure");
+  figures.forEach(figure => {
+    if (className === "all" || figure.classList.contains(className)) {
+      figure.style.display = "block";
+    } else {
+      figure.style.display = "none";
+    }
+  });
 }
