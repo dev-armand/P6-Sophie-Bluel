@@ -99,14 +99,14 @@ async function fetchImagesAndUpdateModal(token) {
       }
 
       const data = await response.json();
-      const imageIds = data.map(item => item.imageId);
+      const imageIds = data.map(item => item.id);
       return imageIds;
     } catch (error) {
       console.error('Error:', error);
       return []; 
     }
     }
-
+    
   //******************************************** */ Delete images in the modal
   const binIconElements = document.querySelectorAll(".galerie-photo-vector.binIcon");
   binIconElements.forEach(binIconElement => {
@@ -118,7 +118,9 @@ async function fetchImagesAndUpdateModal(token) {
   
         if (token) {
           try {
-            const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
+            const imageId = await getImageIdFromImageUrl(imgElement.src);
+            console.log("imageId:", imageId);
+            const apiUrl = `${urlApi}/works/${imageId}`;
             const response = await fetch(apiUrl, {
               method: "DELETE",
               headers: {
@@ -242,7 +244,7 @@ function handleImageSelect(event) {
 document.addEventListener('DOMContentLoaded', addOption);
 async function addOption() {
     // Fetch the data from the API
-    const apiUrl = `${urlApi}/works`;
+    const apiUrl = `${urlApi}/categories`;
     try {
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -252,23 +254,12 @@ async function addOption() {
     
       // Get the select element
       const categorySelect = document.getElementById('categorySelect');
-  
-      // Create an array to store unique category names
-      const uniqueCategories = [];
-  
-      // Iterate through the data and collect unique category names
-      data.forEach(item => {
-        const categoryName = item.category.name;
-        if (!uniqueCategories.includes(categoryName)) {
-          uniqueCategories.push(categoryName);
-        } 
-      });
 
       // Add the unique category names as options in the select element
-      uniqueCategories.forEach(categoryName => {
+      data.forEach(item => {
         const option = document.createElement('option');
-        option.value = categoryName;
-        option.textContent = categoryName;
+        option.value = item.id;
+        option.textContent = item.name;
         categorySelect.appendChild(option);
       });
 
@@ -299,34 +290,29 @@ document.addEventListener('DOMContentLoaded', function() {
   categorieInput.addEventListener('change', checkFormFields);
   
   //*************************************************** */ Function to add the new image to the gallery
-  async function createNewGalleryItem(token) {
-    console.log("Received token in createNewGalleryItem:", token);
-    
+  async function createNewGalleryItem() {
+    const token = getCurrentToken();
+
     const selectedImageFile = document.getElementById('getFile').files[0];
     const titreInput = document.querySelector('.titre-placeholder');
     const categorieInput = document.querySelector('.categorie-placeholder');
     const gallery = document.querySelector('.gallery');
-
     const formData = new FormData();
 
     formData.append("title", titreInput.value);
     formData.append("image", selectedImageFile); // Append the image file, not the HTML element
     formData.append("category", categorieInput.value);
 
-    console.log(formData.get('title'));
-    console.log(formData.get('category'));
-    console.log(formData.get('image'));
-
     console.log("Received token for Authorization:", token);
     try {
       const response = await fetch(`${urlApi}/works`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
         body: formData,
       });
-      
+      console.log("Response:", response)
       if (response.ok) {
         const responseData = await response.json();
         console.log("responseData", responseData);
@@ -404,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Attach click event to the "Valider" button
       if (!selectedImage.src || !titreInput.value.trim() || !categorieInput.value) {
-        alert('Merci de remplire les champs vides.');
+        alert('Merci de remplir les champs vides.');
       } else {
         createNewGalleryItem();
       }
@@ -425,3 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
       addButton.style.display = 'block';
   });
 });
+
+function getCurrentToken() {
+  return sessionStorage.getItem("token");
+}

@@ -186,6 +186,20 @@ footer nav ul {
 	margin: 2em
 }
 
+.contact:hover{
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.projets:hover {
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+	color: black;
+}
+
 /**************************************** LOGIN page */
 
 .loginForm {
@@ -265,6 +279,7 @@ color: white;
 	top: 0;
 	color: white;
 	height: 60px;
+	z-index: 5;
 }
 
 .edition-btn {

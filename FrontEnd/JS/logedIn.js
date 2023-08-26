@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (portfolio) {
       const projectsModifierContent = `
         <div class="projects-modifier">
-          <h2>Mes Projets</h2>
+          <h2 id="projets">Mes Projets</h2>
           <div class="modifier modifier2">
             <img class="modifier-vector" src="./assets/icons/Vector.png" alt="vector modification">
             <button class="modifier-btn modifier-btn2" onclick="openModal()">modifier</button>
