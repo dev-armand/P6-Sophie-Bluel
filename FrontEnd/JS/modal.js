@@ -52,19 +52,17 @@ async function fetchImagesAndUpdateModal(token) {
     }
 
     const data = await response.json();
-    const imageUrls = data.map(item => item.imageUrl);
-    const ids = data.map(item => item.id);
-    const category = data.map(item => item.category);
-    console.log('add imaged to the modal', category);
+    console.log('Data received:', data);
+
     
     // Create figure elements with images and add them to the modal container
-    imageUrls.forEach((imageUrl, index) => {
+    data.forEach((item) => {
       const figureElement = document.createElement("figure");
       figureElement.classList.add("galerie-photo-fig");
-      figureElement.dataset.img = (index + 1).toString();
+      figureElement.dataset.img = item.id;
 
       const imgElement = document.createElement("img");
-      imgElement.src = imageUrl;
+      imgElement.src = item.imageUrl;
       imgElement.classList.add("galerie-photo-img");
 
       const figcaptionElement = document.createElement("figcaption");
@@ -111,14 +109,14 @@ async function fetchImagesAndUpdateModal(token) {
   const binIconElements = document.querySelectorAll(".galerie-photo-vector.binIcon");
   binIconElements.forEach(binIconElement => {
     binIconElement.addEventListener("click", async () => {
-      const figureElement = binIconElement.closest(".galerie-photo-fig");
+      const figureElement = binIconElement.parentElement;
       if (figureElement) {
         const imgElement = figureElement.querySelector(".galerie-photo-img");
         const dataImgValue = figureElement.dataset.img;
   
         if (token) {
           try {
-            const imageId = await getImageIdFromImageUrl(imgElement.id);
+            const imageId = dataImgValue;
             console.log("imageId:", imageId);
             const apiUrl = `${urlApi}/works/${imageId}`;
             const response = await fetch(apiUrl, {
@@ -176,8 +174,8 @@ async function fetchImagesAndUpdateModal(token) {
             if (!imgElement) {
               continue;
             }
-
-            const apiUrl = `${urlApi}/works/${getImageIdFromImageUrl(imgElement.src)}`;
+            const imageId = dataImgValue;
+            const apiUrl = `${urlApi}/works/${imageId}`;
             const response = await fetch(apiUrl, {
               method: "DELETE",
               headers: {
@@ -268,7 +266,7 @@ async function addOption() {
     }
 }
 
-//*************************************************** */  Add event listener to: Change button color, add img to the modal and gallery, reset modal to normal
+//*************************************************** */  Add event listener DOM Content Loaded
   document.addEventListener('DOMContentLoaded', function() {
   const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
