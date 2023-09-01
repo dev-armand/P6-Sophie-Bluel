@@ -21,7 +21,7 @@ document.addEventListener('click', function(event) {
   }
 });
 
-// Attach event listener to acces the 2nd page or go back to the 1st page
+// Attach event listener to navigate between the 1st and 2nd page of the modal
 document.addEventListener('DOMContentLoaded', function() {
   const galeriePhoto2 = document.querySelector('.galerie-photo2');
   const addPicture = document.querySelector('.add-picture-btn');
@@ -106,7 +106,7 @@ async function fetchImagesAndUpdateModal(token) {
       return []; 
     }
     }
-    
+
   //******************************************** */ Delete images in the modal
   const binIconElements = document.querySelectorAll(".galerie-photo-vector.binIcon");
   binIconElements.forEach(binIconElement => {
@@ -118,7 +118,7 @@ async function fetchImagesAndUpdateModal(token) {
   
         if (token) {
           try {
-            const imageId = await getImageIdFromImageUrl(imgElement.src);
+            const imageId = await getImageIdFromImageUrl(imgElement.id);
             console.log("imageId:", imageId);
             const apiUrl = `${urlApi}/works/${imageId}`;
             const response = await fetch(apiUrl, {
@@ -269,7 +269,7 @@ async function addOption() {
 }
 
 //*************************************************** */  Add event listener to: Change button color, add img to the modal and gallery, reset modal to normal
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
   const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
   const categorieInput = document.querySelector('.categorie-placeholder');
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const formData = new FormData();
 
     formData.append("title", titreInput.value);
-    formData.append("image", selectedImageFile); // Append the image file, not the HTML element
+    formData.append("image", selectedImageFile);
     formData.append("category", categorieInput.value);
 
     console.log("Received token for Authorization:", token);

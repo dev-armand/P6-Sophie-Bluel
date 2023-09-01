@@ -43,13 +43,3 @@ async function loginForm() {
     alert("Email ou mot de passe incorrecte !");
   }
 }
-
-// Connection status
-function isConnected(){
-  if (sessionStorage.getItem('token')){
-    return true;
-  } 
-  return false;
-}
-
-

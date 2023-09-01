@@ -1,8 +1,9 @@
-
-
-// Function to check if the user is logged in
-function isConnected() {
-  return sessionStorage.getItem('token') !== null;
+// Function to check if the user connected
+function isConnected(){
+  if (sessionStorage.getItem('token')){
+    return true;
+  } 
+  return false;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
