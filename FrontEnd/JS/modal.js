@@ -54,7 +54,6 @@ async function fetchImagesAndUpdateModal(token) {
     const data = await response.json();
     console.log('Data received:', data);
 
-    
     // Create figure elements with images and add them to the modal container
     data.forEach((item) => {
       const figureElement = document.createElement("figure");
@@ -87,31 +86,12 @@ async function fetchImagesAndUpdateModal(token) {
       console.error('Error fetching images:', error);
   }
 
-    // Function to get image IDs from URL
-  async function getImageIdFromImageUrl() {
-    const apiUrl = `${urlApi}/works`;
-    try {
-      const response = await fetch(apiUrl);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      const imageIds = data.map(item => item.id);
-      return imageIds;
-    } catch (error) {
-      console.error('Error:', error);
-      return []; 
-    }
-    }
-
   //******************************************** */ Delete images in the modal
   const binIconElements = document.querySelectorAll(".galerie-photo-vector.binIcon");
   binIconElements.forEach(binIconElement => {
     binIconElement.addEventListener("click", async () => {
       const figureElement = binIconElement.parentElement;
       if (figureElement) {
-        const imgElement = figureElement.querySelector(".galerie-photo-img");
         const dataImgValue = figureElement.dataset.img;
   
         if (token) {
@@ -267,7 +247,7 @@ async function addOption() {
 }
 
 //*************************************************** */  Add event listener DOM Content Loaded
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
   const selectedImage = document.getElementById('selectedImage');
   const titreInput = document.querySelector('.titre-placeholder');
   const categorieInput = document.querySelector('.categorie-placeholder');
@@ -281,12 +261,11 @@ async function addOption() {
       validerBtn.classList.remove('green-color');
   }
   }
-    
-  // Add event listeners for input changes
+    // Add event listeners for input changes
   selectedImage.addEventListener('load', checkFormFields);
   titreInput.addEventListener('input', checkFormFields);
   categorieInput.addEventListener('change', checkFormFields);
-  
+
   //*************************************************** */ Function to add the new image to the gallery
   async function createNewGalleryItem() {
     const token = getCurrentToken();
@@ -310,6 +289,7 @@ async function addOption() {
         },
         body: formData,
       });
+
       console.log("Response:", response)
       if (response.ok) {
         const responseData = await response.json();
@@ -383,10 +363,10 @@ async function addOption() {
   const originalImageSrc = './assets/icons/picture-svgrepo-com1.png';
   const originalImageClass = 'selected-img';
 
+  // Attach click event to the "Valider" button
   validerBtn.addEventListener('click', function(event) {
       event.preventDefault(); // Prevent form submission
 
-      // Attach click event to the "Valider" button
       if (!selectedImage.src || !titreInput.value.trim() || !categorieInput.value) {
         alert('Merci de remplir les champs vides.');
       } else {
